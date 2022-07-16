@@ -233,6 +233,41 @@ public class SFabricLib
 
 
         /**
+         * Places the block the client has in hand at the inputted coordinates.
+         *
+         * @param client
+         * @param offset
+         * @param swingHand
+         */
+        public static void placeBlockInHandAbsolute(MinecraftClient client, Vec3d placePos, boolean swingHand, Direction dir)
+        {
+            BlockHitResult riggedBlockHitResult =
+                    new BlockHitResult(
+                            placePos,
+                            dir,
+                            new BlockPos(placePos),
+                            true
+                    );
+
+            // Place the block
+            ActionResult blockPlaced =
+                    client.interactionManager.interactBlock(
+                            client.player,
+                            client.world,
+                            Hand.MAIN_HAND,
+                            riggedBlockHitResult
+                    );
+
+            // Swing the client's hand because yes
+            if (swingHand && blockPlaced.isAccepted())
+            {
+                client.player.swingHand(Hand.MAIN_HAND);
+            }
+        }
+
+
+
+        /**
          * Places the block the client has in hand relative to its feet position.
          *
          * @param serverPlayerEntity

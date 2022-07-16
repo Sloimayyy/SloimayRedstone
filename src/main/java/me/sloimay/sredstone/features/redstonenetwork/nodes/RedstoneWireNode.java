@@ -69,8 +69,6 @@ public class RedstoneWireNode extends Node
             BlockState offsetUp = this.world.getBlockState(offsetUpBlockPos);
 
 
-            // TODO: isSolid() and isOpaque() checks seems to fail to know if a redstone dust can
-            // TODO  conduct current through them or if they cut off redstone wires
 
             // # First, check for the redstone dust or repeater -1 in y of the redstone dust
             if (down.isSolidBlock(this.world, downBlockPos))

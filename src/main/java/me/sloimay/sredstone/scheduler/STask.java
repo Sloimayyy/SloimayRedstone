@@ -1,4 +1,8 @@
 package me.sloimay.sredstone.scheduler;
 
-public class STask {
+import net.minecraft.client.MinecraftClient;
+
+public interface STask
+{
+    public void run(MinecraftClient client);
 }

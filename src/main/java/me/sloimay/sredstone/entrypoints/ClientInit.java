@@ -10,6 +10,8 @@ import me.sloimay.sredstone.commands.ClientCommandsInit;
 import me.sloimay.sredstone.db.ClientDB;
 import me.sloimay.sredstone.db.Db;
 import me.sloimay.sredstone.db.StringDB;
+import me.sloimay.sredstone.scheduler.SClientScheduler;
+import me.sloimay.sredstone.scheduler.SClientSchedulerInit;
 import me.sloimay.sredstone.tickers.ClientTicker;
 import me.sloimay.sredstone.tickers.ClientTickersInit;
 import me.sloimay.sredstone.utils.SFabricLib;
@@ -43,6 +45,12 @@ public class ClientInit implements ClientModInitializer
     @Override
     public void onInitializeClient()
     {
+        // Init the scheduler, probably important to init it first, so that
+        // its tasks are executed first.
+        SClientSchedulerInit sClientSchedulerInit = new SClientSchedulerInit();
+        sClientSchedulerInit.initScheduler();
+        //
+
         // Init client commands
         ClientCommandsInit clientCommandsInit = new ClientCommandsInit();
         clientCommandsInit.initCommands();

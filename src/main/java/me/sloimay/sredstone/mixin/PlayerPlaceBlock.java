@@ -1,11 +1,15 @@
 package me.sloimay.sredstone.mixin;
 
+import me.sloimay.sredstone.SRedstone;
 import me.sloimay.sredstone.db.ClientDB;
 import me.sloimay.sredstone.db.Db;
+import me.sloimay.sredstone.features.autodustplacing.AutomaticRedstoneDustPlacing;
+import me.sloimay.sredstone.scheduler.STask;
 import me.sloimay.sredstone.utils.SFabricLib;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
+import net.minecraft.client.MinecraftClient;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.BlockItem;
 import net.minecraft.item.ItemPlacementContext;
@@ -102,6 +106,26 @@ public class PlayerPlaceBlock {
 
 		}*/
 
+		/*
+		if (p.getAbilities().creativeMode && !state.getBlock().asItem().getTranslationKey().equals(Items.REDSTONE.getTranslationKey()))
+		{
+			BlockPos redstoneDustRelativePos = context.getBlockPos().up().subtract(entity.getBlockPos());
+			BlockPos redstoneDustPos = context.getBlockPos().up();
+
+			ItemStack mainhandItem = entity.getInventory().getMainHandStack();
+
+			SFabricLib.PlayerUtils.doPickBlock(ClientDB.mcClient, new ItemStack(Items.REDSTONE, 1));
+			SFabricLib.PlayerUtils.placeBlockInHandAbsolute(
+					ClientDB.mcClient,
+					SFabricLib.VectorUtils.blockPosToVec3d(redstoneDustPos),
+					true,
+					Direction.UP
+			);
+			SFabricLib.PlayerUtils.doPickBlock(ClientDB.mcClient, mainhandItem);
+		}*/
+
+		// ## Auto dust placing feature
+		AutomaticRedstoneDustPlacing.handleFeature(state, context.getBlockPos());
 	}
 
 	/**

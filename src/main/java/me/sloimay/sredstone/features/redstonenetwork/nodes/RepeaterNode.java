@@ -69,6 +69,23 @@ public class RepeaterNode extends Node
             connectedNodes.add(Node.create(world, offsetEqualBlockPos));
         }
 
+        // # Check for repeater in the right orientation in front of the repeater
+        if (offsetEqual.getBlock().equals(Blocks.REPEATER))
+        {
+            if (offsetEqual.getEntries().get(Properties.HORIZONTAL_FACING) == repeaterOutputFacing.getOpposite())
+            {
+                connectedNodes.add(Node.create(world, offsetEqualBlockPos));
+            }
+        }
+
+        // # Check for redstone dust around the block in front if it's a solid block
+        if (offsetEqual.isSolidBlock(world, offsetEqualBlockPos))
+        {
+            
+        }
+
+        // #
+
 
         // ## At the end, add all the child nodes to this node
         this.addChildren(connectedNodes);

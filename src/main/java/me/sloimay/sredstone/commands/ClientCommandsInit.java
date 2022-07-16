@@ -42,6 +42,9 @@ public class ClientCommandsInit
         clientCommands.add(new RedstoneGiveCommand());
         clientCommands.add(new CopyFlipPasteCommand());
         clientCommands.add(new RedstoneNetworkCommand());
+        clientCommands.add(new AutoDustPlacingCommand());
+
+        clientCommands.add(new DevTestCommand());
 
 
         // ## Register each command

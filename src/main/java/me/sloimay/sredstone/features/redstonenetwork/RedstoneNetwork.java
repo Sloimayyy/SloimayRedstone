@@ -2,7 +2,6 @@ package me.sloimay.sredstone.features.redstonenetwork;
 
 import me.sloimay.sredstone.features.redstonenetwork.nodes.Node;
 import me.sloimay.sredstone.utils.SFabricLib;
-import net.minecraft.block.Blocks;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 
@@ -99,9 +98,11 @@ public class RedstoneNetwork
         /*
 
         Notes:
+            // OUTDATED
             - First map the entire network with just nodes
             - then calculate the delay afterwards
             - and tHEn put all of these delays in a hashmap
+            // OUTDATED
 
             The stack is only here for traversing the network efficiently, so that
             when we stumble upon a redstone wire, we don't go back from where we
@@ -144,7 +145,7 @@ public class RedstoneNetwork
 
 
         // ## Register timing of this node
-        this.regiserNodeTiming(startNode, timing);
+        this.registerNodeTiming(startNode, timing);
 
         // ## Populate the children of startNode
         if (startNode.getChildren().isEmpty())
@@ -184,7 +185,7 @@ public class RedstoneNetwork
      * @param node
      * @param timing
      */
-    private void regiserNodeTiming(Node node, int timing)
+    private void registerNodeTiming(Node node, int timing)
     {
         String nodeCharacterizationString = node.getPosition().toShortString();
 
