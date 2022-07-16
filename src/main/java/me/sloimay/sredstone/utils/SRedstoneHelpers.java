@@ -1,8 +1,15 @@
 package me.sloimay.sredstone.utils;
 
 import me.sloimay.sredstone.db.ClientDB;
-import net.minecraft.text.LiteralText;
+import me.sloimay.sredstone.features.redstonenetwork.nodes.Node;
+import net.minecraft.block.BlockState;
+import net.minecraft.block.Blocks;
+import net.minecraft.state.property.Properties;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.Direction;
+import net.minecraft.world.World;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
@@ -14,7 +21,7 @@ public class SRedstoneHelpers
     /**
      * Helpers about redstone networks.
      */
-    public static class RedstoneNetworkHelpers
+    public static class RedstoneNetworkHelper
     {
         /**
          * Converts a set of timings coming from a node in a redstone
@@ -51,6 +58,110 @@ public class SRedstoneHelpers
 
             // Retrun
             return displayedString;
+        }
+
+
+        /**
+         * Contains useful methods for nodes
+         */
+        public static class NodeHelper
+        {
+            // ### Fields
+            /**
+             * An array of all 6 {@code Direction} that MC has. Used for caching purposes
+             * to not use Direction.values() as it creates a new array everytime we call
+             * the method.
+             */
+            public static final Direction[] allDirections =
+                    new Direction[] {
+                            Direction.EAST,
+                            Direction.SOUTH,
+                            Direction.WEST,
+                            Direction.NORTH,
+                            Direction.UP,
+                            Direction.DOWN
+                    };
+
+            /**
+             * Array of all horizontal directions.
+             */
+            private static final Direction[] horizontalDirections =
+                    new Direction[] {
+                            Direction.EAST,
+                            Direction.SOUTH,
+                            Direction.WEST,
+                            Direction.NORTH,
+                    };
+
+            /**
+             * Array of all vertical directions.
+             */
+            private static final Direction[] verticalDirections =
+                    new Direction[] {
+                            Direction.UP,
+                            Direction.DOWN
+                    };
+            // ###
+
+
+
+            /**
+             * Returns the redstone wire nodes around the inputted solid block.
+             * (Basically checks in all 6 {@code Direction}s)
+             *
+             * @param world
+             * @param solidBlockPosition
+             * @return
+             */
+            public static List<Node> findRedstoneWireNodesAroundSolidBlock(World world, BlockPos solidBlockPosition)
+            {
+                // ## Setup
+                List<Node> redstoneWireNodesAround = new ArrayList<Node>();
+
+                // ## Loop through all 6 directions and check
+                for (Direction dir : NodeHelper.allDirections)
+                {
+                    BlockPos checkedPos = solidBlockPosition.offset(dir);
+                    if (world.getBlockState(checkedPos).getBlock().equals(Blocks.REDSTONE_WIRE))
+                    {
+                        redstoneWireNodesAround.add(Node.create(world, checkedPos));
+                    }
+                }
+
+                // ## Retrun
+                return redstoneWireNodesAround;
+            }
+
+            /**
+             * Returns the possible repeater nodes around the inputted solid block
+             * that uses that block as an input.
+             *
+             * @param world
+             * @param solidBlockPosition
+             * @return
+             */
+            public static List<Node> findRepeatersThatUsesThatSolidBlockAsInput(World world, BlockPos solidBlockPosition)
+            {
+                // ## Setup
+                List<Node> repeaterNodes = new ArrayList<Node>();
+
+                // ## Loop through all 4 directions and check
+                for (Direction dir : NodeHelper.horizontalDirections)
+                {
+                    BlockPos checkedPos = solidBlockPosition.offset(dir);
+                    BlockState checkedBlockState = world.getBlockState(checkedPos);
+                    if (checkedBlockState.getBlock().equals(Blocks.REPEATER))
+                    {
+                        if (checkedBlockState.getEntries().get(Properties.HORIZONTAL_FACING) == dir.getOpposite())
+                        {
+                            repeaterNodes.add(Node.create(world, checkedPos));
+                        }
+                    }
+                }
+
+                // ## Retrun
+                return repeaterNodes;
+            }
         }
     }
 }

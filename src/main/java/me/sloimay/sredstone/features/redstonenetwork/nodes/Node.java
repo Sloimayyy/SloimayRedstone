@@ -149,6 +149,10 @@ public abstract class Node
         {
             return new RepeaterNode(world, blockPos, blockState);
         }
+        if (blockState.getBlock().equals(Blocks.COMPARATOR))
+        {
+            return new ComparatorNode(world, blockPos, blockState);
+        }
 
 
         // ## Return if nothing matched

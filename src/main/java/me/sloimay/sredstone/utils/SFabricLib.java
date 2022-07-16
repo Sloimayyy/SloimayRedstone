@@ -2,6 +2,7 @@ package me.sloimay.sredstone.utils;
 
 import com.mojang.brigadier.Command;
 import com.mojang.brigadier.context.CommandContext;
+import me.sloimay.sredstone.db.ClientDB;
 import net.fabricmc.fabric.api.client.command.v1.FabricClientCommandSource;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
@@ -363,44 +364,34 @@ public class SFabricLib
          */
         public static char getPlayerWEMainDirection(ClientPlayerEntity player, boolean reversed)
         {
-            float playerYaw = PlayerUtils.getClientPlayerYaw(player);
-            float playerPitch = PlayerUtils.getClientPlayerPitch(player);
+            // ## Get yaw and pitch
+            float playerYaw = SFabricLib.PlayerUtils.getClientPlayerYaw(player);
 
-            System.out.println(playerYaw);
-            System.out.println(playerPitch);
+            // yaw€[-180; 180[
+            // Normally to rotate it 180 degrees we would do:
+            // yaw += 180 (map it to [0; 360[
+            // yaw += 180 (rotate it)
+            // yaw %= 360 (roll it back to a value between 0 and 360 if out of range)
+            // yaw -= 180 (map it back to [-180; 180[
+            // But this expression emulates that as well:
+            playerYaw += reversed ? (playerYaw >= 0 ? -180 : 180) : 0;
 
-            // # Pitch priority
-            if (playerPitch < -69)
-            {
-                // Up
-                return reversed ? 'd' : 'u';
-            }
-            else if (playerPitch > 69)
-            {
-                // Down
-                return reversed ? 'u' : 'd';
-            }
-            // # Yaw afterwards
-            else if (playerYaw > -135 && playerYaw <= -45)
-            {
-                // East
-                return reversed ? 'w' : 'e';
-            }
-            else if (playerYaw > -45 && playerYaw <= 45)
-            {
-                // South
-                return reversed ? 'n' : 's';
-            }
-            else if (playerYaw > 45 && playerYaw <= 135)
-            {
-                // West
-                return reversed ? 'e' : 'w';
-            }
-            else
-            {
-                // North
-                return reversed ? 's' : 'n';
-            }
+            float playerPitch = player.getPitch() * (reversed ? -1 : 1);
+
+            // ## Get dir
+            char dir;
+
+            dir =   playerPitch < -69 || playerPitch > 69 ?
+                        playerPitch < -69 ? 'u' :
+                                            'd'
+                    :
+                        playerYaw > -135 && playerYaw <= -45 ? 'e' :
+                        playerYaw > -45  && playerYaw <=  45 ? 's' :
+                        playerYaw > 45   && playerYaw <= 135 ? 'w' :
+                                                               'n';
+
+            // ## Retrun
+            return dir;
         }
 
         /**

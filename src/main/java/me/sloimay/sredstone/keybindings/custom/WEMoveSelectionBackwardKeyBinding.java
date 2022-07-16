@@ -41,7 +41,8 @@ public class WEMoveSelectionBackwardKeyBinding extends SKeyBinding
         if(!client.player.getAbilities().creativeMode) return;
 
         // Dispatch cmd
-        client.player.sendChatMessage("//move b -s");
+        char worldEditDirection = SFabricLib.PlayerUtils.getPlayerWEMainDirection(client.player, true);
+        client.player.sendChatMessage("//move " + worldEditDirection + " -s");
 
 
         /* ========== OLD IMPLEMENTATION

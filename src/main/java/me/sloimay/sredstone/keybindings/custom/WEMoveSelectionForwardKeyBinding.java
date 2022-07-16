@@ -42,7 +42,9 @@ public class WEMoveSelectionForwardKeyBinding extends SKeyBinding
         if(!client.player.getAbilities().creativeMode) return;
 
         // Dispatch cmd
-        client.player.sendChatMessage("//move f -s");
+        char worldEditDirection = SFabricLib.PlayerUtils.getPlayerWEMainDirection(client.player, false);
+        System.out.println(worldEditDirection);
+        client.player.sendChatMessage("//move " + worldEditDirection + " -s");
 
 
         /* ========== OLD IMPLEMENTATION

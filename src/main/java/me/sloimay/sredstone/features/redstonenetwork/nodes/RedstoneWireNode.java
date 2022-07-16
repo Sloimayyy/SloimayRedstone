@@ -1,5 +1,6 @@
 package me.sloimay.sredstone.features.redstonenetwork.nodes;
 
+import me.sloimay.sredstone.utils.SRedstoneHelpers;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
 import net.minecraft.block.enums.WireConnection;
@@ -38,7 +39,7 @@ public class RedstoneWireNode extends Node
     public void populateChildren()
     {
         // ## Setup
-        List<Node> connectedNodes = new ArrayList<Node>();
+        List<Node> receivingNodes = new ArrayList<Node>();
         // # Setting up the properties
         // The hashmap that links directions to the wire connections of the redstone wire
         HashMap<Direction, WireConnection> wireConnectionOfDirection = new HashMap<Direction, WireConnection>();
@@ -76,7 +77,7 @@ public class RedstoneWireNode extends Node
                 // Check for redstone wire
                 if (offsetDown.getBlock().equals(Blocks.REDSTONE_WIRE) && !offsetEqual.isOpaque())
                 {
-                    connectedNodes.add(Node.create(world, offsetDownBlockPos));
+                    receivingNodes.add(Node.create(world, offsetDownBlockPos));
                 }
 
                 // Check for repeater
@@ -84,7 +85,7 @@ public class RedstoneWireNode extends Node
                 {
                     if (offsetDown.getEntries().get(Properties.HORIZONTAL_FACING) == directionChecked.getOpposite())
                     {
-                        connectedNodes.add(Node.create(world, offsetDownBlockPos));
+                        receivingNodes.add(Node.create(world, offsetDownBlockPos));
                     }
                 }
             }
@@ -93,14 +94,14 @@ public class RedstoneWireNode extends Node
             // Redstone wire
             if (offsetEqual.getBlock().equals(Blocks.REDSTONE_WIRE))
             {
-                connectedNodes.add(Node.create(world, offsetEqualBlockPos));
+                receivingNodes.add(Node.create(world, offsetEqualBlockPos));
             }
             // Repeater
             if (offsetEqual.getBlock().equals(Blocks.REPEATER))
             {
                 if (offsetEqual.getEntries().get(Properties.HORIZONTAL_FACING) == directionChecked.getOpposite())
                 {
-                    connectedNodes.add(Node.create(world, offsetEqualBlockPos));
+                    receivingNodes.add(Node.create(world, offsetEqualBlockPos));
                 }
             }
 
@@ -109,7 +110,20 @@ public class RedstoneWireNode extends Node
             {
                 if (offsetUp.getBlock().equals(Blocks.REDSTONE_WIRE))
                 {
-                    connectedNodes.add(Node.create(world, offsetUpBlockPos));
+                    receivingNodes.add(Node.create(world, offsetUpBlockPos));
+                }
+            }
+
+            // # Fourth, if the redstone dust is connected to offsetEqual (and offsetEqual is solid),
+            // # check for repeaters around, as they can take the inputs from it
+            if (offsetEqual.isSolidBlock(world, offsetEqualBlockPos))
+            {
+                if (wireConnectionOfDirection.get(directionChecked).isConnected())
+                {
+                    List<Node> repeaterNodes =
+                            SRedstoneHelpers.RedstoneNetworkHelper.NodeHelper
+                                    .findRepeatersThatUsesThatSolidBlockAsInput(world, offsetEqualBlockPos);
+                    receivingNodes.addAll(repeaterNodes);
                 }
             }
 
@@ -121,7 +135,7 @@ public class RedstoneWireNode extends Node
 
 
         // ## At the end, add all the child nodes to this node
-        this.addChildren(connectedNodes);
+        this.addChildren(receivingNodes);
     }
 
     // ###

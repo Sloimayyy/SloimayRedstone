@@ -1,9 +1,7 @@
 package me.sloimay.sredstone.commands.custom.client;
 
-import ca.weblite.objc.Client;
 import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.arguments.IntegerArgumentType;
-import com.mojang.brigadier.context.CommandContextBuilder;
 import com.mojang.brigadier.tree.LiteralCommandNode;
 import me.sloimay.sredstone.commands.SClientCommand;
 import me.sloimay.sredstone.db.ClientDB;
@@ -11,16 +9,11 @@ import me.sloimay.sredstone.features.redstonenetwork.RedstoneNetwork;
 import me.sloimay.sredstone.features.redstonenetwork.nodes.Node;
 import me.sloimay.sredstone.utils.SFabricLib;
 import me.sloimay.sredstone.utils.SRedstoneHelpers;
-import net.fabricmc.fabric.api.client.command.v1.ClientCommandManager;
 import net.fabricmc.fabric.api.client.command.v1.FabricClientCommandSource;
-import net.minecraft.command.argument.BlockPosArgumentType;
 import net.minecraft.network.MessageType;
-import net.minecraft.server.command.ServerCommandSource;
 import net.minecraft.text.LiteralText;
 import net.minecraft.util.math.BlockPos;
-import org.apache.logging.log4j.core.jmx.Server;
 
-import java.util.List;
 import java.util.Set;
 
 import static net.fabricmc.fabric.api.client.command.v1.ClientCommandManager.argument;
@@ -195,7 +188,7 @@ public class RedstoneNetworkCommand extends SClientCommand
 
 
                                     // ## Display the node timings
-                                    String nodeTimingsString = SRedstoneHelpers.RedstoneNetworkHelpers.timingsSetToString(nodeTimings);
+                                    String nodeTimingsString = SRedstoneHelpers.RedstoneNetworkHelper.timingsSetToString(nodeTimings);
                                     ClientDB.mcClient.inGameHud.setOverlayMessage(new LiteralText(nodeTimingsString), false);
 
 

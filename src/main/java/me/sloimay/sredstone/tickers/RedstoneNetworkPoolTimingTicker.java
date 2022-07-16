@@ -1,6 +1,5 @@
 package me.sloimay.sredstone.tickers;
 
-import me.sloimay.sredstone.SRedstone;
 import me.sloimay.sredstone.db.ClientDB;
 import me.sloimay.sredstone.features.redstonenetwork.nodes.Node;
 import me.sloimay.sredstone.utils.SFabricLib;
@@ -8,7 +7,6 @@ import me.sloimay.sredstone.utils.SRedstoneHelpers;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.text.LiteralText;
 
-import java.util.List;
 import java.util.Set;
 
 /**
@@ -59,7 +57,7 @@ public class RedstoneNetworkPoolTimingTicker extends ClientTicker
         if (nodeTimings == null) return;
 
         // ## Display the timings in the overlay message
-        String nodeTimingsString = SRedstoneHelpers.RedstoneNetworkHelpers.timingsSetToString(nodeTimings);
+        String nodeTimingsString = SRedstoneHelpers.RedstoneNetworkHelper.timingsSetToString(nodeTimings);
         ClientDB.mcClient.inGameHud.setOverlayMessage(new LiteralText(nodeTimingsString), false);
 
 
