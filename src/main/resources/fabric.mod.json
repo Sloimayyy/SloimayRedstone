@@ -1,0 +1,42 @@
+{
+  "schemaVersion": 1,
+  "id": "sredstone",
+  "version": "${version}",
+
+  "name": "Sloimay's Redstone Quality of Life Features",
+  "description": "epic sloimay redstone",
+  "authors": [
+    "Sloimay"
+  ],
+  "contact": {
+    "homepage": "https://www.youtube.com/c/Sloimay"
+  },
+
+  "license": "CC0-1.0",
+  "icon": "assets/sredstone/icon.png",
+
+  "environment": "*",
+  "entrypoints": {
+    "main": [
+      "me.sloimay.sredstone.SRedstone"
+    ],
+    "client": [
+      "me.sloimay.sredstone.keybindings.KeyBindingsRegister",
+      "me.sloimay.sredstone.entrypoints.ClientInit"
+    ]
+  },
+  "mixins": [
+    "sredstone.mixins.json"
+  ],
+
+  "depends": {
+    "fabricloader": ">=0.12.12",
+    "fabric": "*",
+    "worldedit": "*",
+    "minecraft": "1.17.x",
+    "java": ">=16"
+  },
+  "suggests": {
+    "another-mod": "*"
+  }
+}

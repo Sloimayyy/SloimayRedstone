@@ -1,0 +1,10 @@
+{
+  "key.category.sredstone": "Sloimayyy Redstone QOL",
+
+  "key.sredstone.rqol_binding": "Multi Functional Key",
+  "key.sredstone.move_forwards": "Push WE Selection",
+  "key.sredstone.move_backwards": "Pull WE Selection",
+  "key.sredstone.place_block_in_the_air": "Place block in the air",
+  "key.sredstone.auto_redstone_dust_placing": "Auto dust placing Toggle",
+  "key.sredstone.cool_tp": "Cool TP (64 Blocks)"
+}

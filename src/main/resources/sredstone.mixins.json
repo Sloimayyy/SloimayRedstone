@@ -1,0 +1,13 @@
+{
+  "required": true,
+  "minVersion": "0.8",
+  "package": "me.sloimay.sredstone.mixin",
+  "compatibilityLevel": "JAVA_16",
+  "mixins": [],
+  "client": [
+    "PlayerPlaceBlock"
+  ],
+  "injectors": {
+    "defaultRequire": 1
+  }
+}
