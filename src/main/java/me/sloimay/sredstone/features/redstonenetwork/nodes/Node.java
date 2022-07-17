@@ -1,6 +1,7 @@
 package me.sloimay.sredstone.features.redstonenetwork.nodes;
 
 import me.sloimay.sredstone.utils.SFabricLib;
+import me.sloimay.sredstone.utils.SRedstoneHelpers;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
 import net.minecraft.block.Material;
@@ -141,17 +142,25 @@ public abstract class Node
 
 
         // ## If statements to know which node it should be
-        if (blockState.getBlock().equals(Blocks.REDSTONE_WIRE))
+        if (blockState.isOf(Blocks.REDSTONE_WIRE))
         {
             return new RedstoneWireNode(world, blockPos, blockState);
         }
-        if (blockState.getBlock().equals(Blocks.REPEATER))
+        if (blockState.isOf(Blocks.REPEATER))
         {
             return new RepeaterNode(world, blockPos, blockState);
         }
-        if (blockState.getBlock().equals(Blocks.COMPARATOR))
+        if (blockState.isOf(Blocks.COMPARATOR))
         {
             return new ComparatorNode(world, blockPos, blockState);
+        }
+        if (blockState.isOf(Blocks.REDSTONE_WALL_TORCH))
+        {
+            return new RedstoneWallTorchNode(world, blockPos, blockState);
+        }
+        if (blockState.isOf(Blocks.REDSTONE_TORCH))
+        {
+            return new RedstoneTorchNode(world, blockPos, blockState);
         }
 
 

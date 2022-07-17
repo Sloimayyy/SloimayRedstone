@@ -16,6 +16,7 @@ import java.util.List;
 
 import static me.sloimay.sredstone.utils.SFabricLib.BlockUtils.*;
 import static me.sloimay.sredstone.utils.SRedstoneHelpers.RedstoneNetworkHelper.NodeHelper.*;
+import static me.sloimay.sredstone.utils.SRedstoneHelpers.RedstoneNetworkHelper.NodeHelper.findComparatorsConnectedToBlock;
 
 public class RedstoneWireNode extends Node
 {
@@ -113,12 +114,16 @@ public class RedstoneWireNode extends Node
 
 
             // # COMPARATORS
-            if (isSolidBlock(world, down))
+            if (isSolidBlock(world, down) && !isBlockEntity(offsetEqual))
                 if (isBlock(offsetDown, Blocks.COMPARATOR))
-                    // Checking for comparators not facing in our redstone wire node, as they can take
-                    // a redstone wire input from all 3 sides except this one.
-                    if (getProperty(offsetDown, Properties.HORIZONTAL_FACING) != directionChecked)
-                        receivingNodes.add( Node.create(world, offsetDown.getBlockPos()) );
+                    receivingNodes.add( Node.create(world, offsetDown.getBlockPos()) );
+
+            if (wireConnectionOfDirection.get(directionChecked).isConnected())
+                if (isBlock(offsetEqual, Blocks.COMPARATOR))
+                    // Checking for comparators not facing in our wire node, as they can take
+                    // a wire input from all 3 sides except this one.
+                    if (getProperty(offsetEqual, Properties.HORIZONTAL_FACING) != directionChecked)
+                        receivingNodes.add(Node.create(world, offsetEqual.getBlockPos()));
 
             if (isBlock(offsetEqual, Blocks.COMPARATOR))
                 if (getProperty(offsetEqual, Properties.HORIZONTAL_FACING) == directionChecked.getOpposite())
@@ -129,6 +134,24 @@ public class RedstoneWireNode extends Node
                 // go through the comparator if its reading from a block entity.
                 if (wireConnectionOfDirection.get(directionChecked).isConnected())
                     receivingNodes.addAll( findComparatorsConnectedToBlock(world, offsetEqual.getBlockPos()) );
+
+
+            // # REDSTONE WALL TORCHES
+            if (isSolidBlock(world, down))
+                if (isBlock(offsetDown, Blocks.REDSTONE_WALL_TORCH))
+                    if (getProperty(offsetDown, Properties.HORIZONTAL_FACING) == directionChecked)
+                        receivingNodes.add( Node.create(world, offsetDown.getBlockPos()) );
+
+            if (isSolidBlock(world, offsetEqual))
+                if (wireConnectionOfDirection.get(directionChecked).isConnected())
+                    receivingNodes.addAll( findRedstoneWallTorchesConnectedToBlock(world, offsetEqual.getBlockPos()) );
+
+
+            // # REDSTONE TORCHES
+            if (isSolidBlock(world, offsetEqual))
+                if (wireConnectionOfDirection.get(directionChecked).isConnected())
+                    if (isBlock(offsetUp, Blocks.REDSTONE_TORCH))
+                        receivingNodes.add( Node.create(world, offsetUp.getBlockPos()) );
         }
 
 

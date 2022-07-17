@@ -52,6 +52,8 @@ public class RepeaterNode extends Node
         // # Setup
         SFabricLib.BlockUtils.PositionedBlockState offsetEqual =
                 SFabricLib.BlockUtils.PositionedBlockState.of(world, this.position.offset(repeaterOutputFacing));
+        SFabricLib.BlockUtils.PositionedBlockState offsetUp =
+                SFabricLib.BlockUtils.PositionedBlockState.of(world, offsetEqual.getBlockPos().offset(Direction.UP));
 
 
         // # REDSTONE WIRES
@@ -73,13 +75,26 @@ public class RepeaterNode extends Node
 
         // # COMPARATORS
         if (isBlock(offsetEqual, Blocks.COMPARATOR))
-            if (getProperty(offsetEqual, Properties.HORIZONTAL_FACING) == repeaterOutputFacing.getOpposite())
+            // Checking for repeater not facing in our repeater node, as they can take
+            // a repeater input from all 3 sides except this one.
+            if (getProperty(offsetEqual, Properties.HORIZONTAL_FACING) != repeaterOutputFacing)
                 receivingNodes.add(Node.create(world, offsetEqual.getBlockPos()));
 
         if (isSolidBlock(world, offsetEqual) && !isBlockEntity(offsetEqual))
             // Block entities have priority on a comparator, so the repeater doesn't actually
             // go through the comparator if its reading from a block entity.
             receivingNodes.addAll( findComparatorsConnectedToBlock(world, offsetEqual.getBlockPos()) );
+
+
+        // # REDSTONE WALL TORCHES
+        if (isSolidBlock(world, offsetEqual))
+            receivingNodes.addAll( findRedstoneWallTorchesConnectedToBlock(world, offsetEqual.getBlockPos()) );
+
+
+        // # REDSTONE TORCHES
+        if (isSolidBlock(world, offsetEqual))
+            if (isBlock(offsetUp, Blocks.REDSTONE_TORCH))
+                receivingNodes.add( Node.create(world, offsetUp.getBlockPos()) );
 
 
 
