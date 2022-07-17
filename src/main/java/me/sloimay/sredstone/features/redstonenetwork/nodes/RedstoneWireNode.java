@@ -124,7 +124,9 @@ public class RedstoneWireNode extends Node
                 if (getProperty(offsetEqual, Properties.HORIZONTAL_FACING) == directionChecked.getOpposite())
                     receivingNodes.add( Node.create(world, offsetEqual.getBlockPos()) );
 
-            if (isSolidBlock(world, offsetEqual))
+            if (isSolidBlock(world, offsetEqual) && !isBlockEntity(offsetEqual))
+                // Block entities have priority on a comparator, so the wire doesn't actually
+                // go through the comparator if its reading from a block entity.
                 if (wireConnectionOfDirection.get(directionChecked).isConnected())
                     receivingNodes.addAll( findComparatorsConnectedToBlock(world, offsetEqual.getBlockPos()) );
         }

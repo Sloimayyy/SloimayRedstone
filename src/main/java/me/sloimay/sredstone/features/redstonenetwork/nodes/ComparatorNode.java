@@ -28,7 +28,7 @@ public class ComparatorNode extends Node
     public ComparatorNode(World world, BlockPos position, BlockState blockState)
     {
         super(world, position, blockState);
-        this.latency = 1;
+        this.latency = 2;
     }
 
     // ###
