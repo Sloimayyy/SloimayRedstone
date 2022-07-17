@@ -42,7 +42,7 @@ public class RedstoneNetworkPoolTimingTicker extends ClientTicker
 
         // ## Get the node timings
         // # Get the block looked at
-        SFabricLib.PlayerUtils.PositionedBlock blockLookedAt =
+        SFabricLib.BlockUtils.PositionedBlock blockLookedAt =
                 SFabricLib.PlayerUtils.getBlockLookingAtClient(
                         ClientDB.mcClient.player, 5.0, 0, false
                 );

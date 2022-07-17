@@ -81,7 +81,7 @@ public class RedstoneNetworkCommand extends SClientCommand
 
 
                                                     // ## Get block looked at
-                                                    SFabricLib.PlayerUtils.PositionedBlock blockLookedAt =
+                                                    SFabricLib.BlockUtils.PositionedBlock blockLookedAt =
                                                             SFabricLib.PlayerUtils.getBlockLookingAtClient(
                                                                     ClientDB.mcClient.player, 5.0, 0, false
                                                             );
@@ -149,7 +149,7 @@ public class RedstoneNetworkCommand extends SClientCommand
 
 
                                     // ## Get block looked at
-                                    SFabricLib.PlayerUtils.PositionedBlock blockLookedAt =
+                                    SFabricLib.BlockUtils.PositionedBlock blockLookedAt =
                                             SFabricLib.PlayerUtils.getBlockLookingAtClient(
                                                     ClientDB.mcClient.player, 5.0, 0, false
                                             );

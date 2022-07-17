@@ -1,6 +1,7 @@
 package me.sloimay.sredstone.features.redstonenetwork.nodes;
 
 import me.sloimay.sredstone.utils.SRedstoneHelpers;
+import me.sloimay.sredstone.utils.SRedstoneHelpers.RedstoneNetworkHelper.NodeHelper;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
 import net.minecraft.block.enums.WireConnection;
@@ -12,6 +13,9 @@ import net.minecraft.world.World;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+
+import static me.sloimay.sredstone.utils.SFabricLib.BlockUtils.*;
+import static me.sloimay.sredstone.utils.SRedstoneHelpers.RedstoneNetworkHelper.NodeHelper.*;
 
 public class RedstoneWireNode extends Node
 {
@@ -38,8 +42,28 @@ public class RedstoneWireNode extends Node
 
     public void populateChildren()
     {
+        /*
+         * So far I've been trying to implement every redstone component node by
+         * hardcoding them, like "if [block here] and [block there is redstone] then [node]"
+         * but that is really inneficient. I need to think of a way to mimic redstone with
+         * code, and the simplest and I think best way would be to implement searching
+         * the same way redstone works: with weak and strong powering.
+         *
+         * Observations:
+         *  - Weak powering is a subset of strong powering. There is no redstone component
+         *      that will get powered by weak powering that will not get powered by strong powering.
+         *
+         * will think about it more later
+         *
+         *
+         */
+
         // ## Setup
         List<Node> receivingNodes = new ArrayList<Node>();
+
+
+        /* OLD "HARDCODE" IMPLEMENTATION */
+
         // # Setting up the properties
         // The hashmap that links directions to the wire connections of the redstone wire
         HashMap<Direction, WireConnection> wireConnectionOfDirection = new HashMap<Direction, WireConnection>();
@@ -50,87 +74,59 @@ public class RedstoneWireNode extends Node
 
 
         // ## Checking and creating nodes
-        Direction directionChecked = Direction.EAST;
-        for (int i = 0; i < 4; i++)
+        for (Direction directionChecked : NodeHelper.horizontalDirections)
         {
             // # Setup
-            BlockPos offsetEqualBlockPos = this.position.offset(directionChecked);
-            BlockState offsetEqual = this.world.getBlockState(offsetEqualBlockPos);
-
-            BlockPos offsetDownBlockPos = offsetEqualBlockPos.offset(Direction.DOWN);
-            BlockState offsetDown = this.world.getBlockState(offsetDownBlockPos);
-
-            BlockPos downBlockPos = this.position.offset(Direction.DOWN);
-            BlockState down = this.world.getBlockState(downBlockPos);
-
-            BlockPos upBlockPos = this.position.offset(Direction.UP);
-            BlockState up = this.world.getBlockState(upBlockPos);
-
-            BlockPos offsetUpBlockPos = offsetEqualBlockPos.offset(Direction.UP);
-            BlockState offsetUp = this.world.getBlockState(offsetUpBlockPos);
+            PositionedBlockState offsetEqual =  PositionedBlockState.of(world, this.position.offset(directionChecked));
+            PositionedBlockState offsetDown =   PositionedBlockState.of(world, offsetEqual.getBlockPos().offset(Direction.DOWN));
+            PositionedBlockState down =         PositionedBlockState.of(world, this.position.offset(Direction.DOWN));
+            PositionedBlockState up =           PositionedBlockState.of(world, this.position.offset(Direction.UP));
+            PositionedBlockState offsetUp =     PositionedBlockState.of(world, offsetEqual.getBlockPos().offset(Direction.UP));
 
 
+            // # REDSTONE WIRES
+            if (isSolidBlock(world, down))
+                if (isBlock(offsetDown, Blocks.REDSTONE_WIRE) && !isSolidBlock(world, offsetEqual))
+                    receivingNodes.add( Node.create(world, offsetDown.getBlockPos()) );
 
-            // # First, check for the redstone dust or repeater -1 in y of the redstone dust
-            if (down.isSolidBlock(this.world, downBlockPos))
-            {
-                // Check for redstone wire
-                if (offsetDown.getBlock().equals(Blocks.REDSTONE_WIRE) && !offsetEqual.isOpaque())
-                {
-                    receivingNodes.add(Node.create(world, offsetDownBlockPos));
-                }
+            if (isBlock(offsetEqual, Blocks.REDSTONE_WIRE))
+                receivingNodes.add( Node.create(world, offsetEqual.getBlockPos()) );
 
-                // Check for repeater
-                if (offsetDown.getBlock().equals(Blocks.REPEATER))
-                {
-                    if (offsetDown.getEntries().get(Properties.HORIZONTAL_FACING) == directionChecked.getOpposite())
-                    {
-                        receivingNodes.add(Node.create(world, offsetDownBlockPos));
-                    }
-                }
-            }
+            if (!isSolidBlock(world, up))
+                if (isBlock(offsetUp, Blocks.REDSTONE_WIRE))
+                    receivingNodes.add( Node.create(world, offsetUp.getBlockPos()) );
 
-            // # Second, check for repeaters or dust directly connected to this dust
-            // Redstone wire
-            if (offsetEqual.getBlock().equals(Blocks.REDSTONE_WIRE))
-            {
-                receivingNodes.add(Node.create(world, offsetEqualBlockPos));
-            }
-            // Repeater
-            if (offsetEqual.getBlock().equals(Blocks.REPEATER))
-            {
-                if (offsetEqual.getEntries().get(Properties.HORIZONTAL_FACING) == directionChecked.getOpposite())
-                {
-                    receivingNodes.add(Node.create(world, offsetEqualBlockPos));
-                }
-            }
 
-            // # Third, check for redstone dust at offsetUp
-            if (!up.isSolidBlock(this.world, downBlockPos))
-            {
-                if (offsetUp.getBlock().equals(Blocks.REDSTONE_WIRE))
-                {
-                    receivingNodes.add(Node.create(world, offsetUpBlockPos));
-                }
-            }
+            // # REPEATERS
+            if (isSolidBlock(world, down))
+                if (isBlock(offsetDown, Blocks.REPEATER))
+                    if (getProperty(offsetDown, Properties.HORIZONTAL_FACING) == directionChecked.getOpposite())
+                        receivingNodes.add( Node.create(world, offsetDown.getBlockPos()) );
 
-            // # Fourth, if the redstone dust is connected to offsetEqual (and offsetEqual is solid),
-            // # check for repeaters around, as they can take the inputs from it
-            if (offsetEqual.isSolidBlock(world, offsetEqualBlockPos))
-            {
+            if (isBlock(offsetEqual, Blocks.REPEATER))
+                if (getProperty(offsetEqual, Properties.HORIZONTAL_FACING) == directionChecked.getOpposite())
+                    receivingNodes.add( Node.create(world, offsetEqual.getBlockPos()) );
+
+            if (isSolidBlock(world, offsetEqual))
                 if (wireConnectionOfDirection.get(directionChecked).isConnected())
-                {
-                    List<Node> repeaterNodes =
-                            SRedstoneHelpers.RedstoneNetworkHelper.NodeHelper
-                                    .findRepeatersThatUsesThatSolidBlockAsInput(world, offsetEqualBlockPos);
-                    receivingNodes.addAll(repeaterNodes);
-                }
-            }
+                    receivingNodes.addAll( findRepeatersConnectedToBlock(world, offsetEqual.getBlockPos()) );
 
 
+            // # COMPARATORS
+            if (isSolidBlock(world, down))
+                if (isBlock(offsetDown, Blocks.COMPARATOR))
+                    // Checking for comparators not facing in our redstone wire node, as they can take
+                    // a redstone wire input from all 3 sides except this one.
+                    if (getProperty(offsetDown, Properties.HORIZONTAL_FACING) != directionChecked)
+                        receivingNodes.add( Node.create(world, offsetDown.getBlockPos()) );
 
-            // # At the end, rotate the direction for the next iteration
-            directionChecked = directionChecked.rotateClockwise(Direction.Axis.Y);
+            if (isBlock(offsetEqual, Blocks.COMPARATOR))
+                if (getProperty(offsetEqual, Properties.HORIZONTAL_FACING) == directionChecked.getOpposite())
+                    receivingNodes.add( Node.create(world, offsetEqual.getBlockPos()) );
+
+            if (isSolidBlock(world, offsetEqual))
+                if (wireConnectionOfDirection.get(directionChecked).isConnected())
+                    receivingNodes.addAll( findComparatorsConnectedToBlock(world, offsetEqual.getBlockPos()) );
         }
 
 

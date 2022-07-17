@@ -13,8 +13,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static me.sloimay.sredstone.utils.SRedstoneHelpers.RedstoneNetworkHelper.NodeHelper.*;
+import static me.sloimay.sredstone.utils.SRedstoneHelpers.RedstoneNetworkHelper.NodeHelper.findComparatorsConnectedToBlock;
 
-public class RepeaterNode extends Node
+public class ComparatorNode extends Node
 {
     // ### Fields
 
@@ -24,12 +25,10 @@ public class RepeaterNode extends Node
 
     // ### Init
 
-    public RepeaterNode(World world, BlockPos position, BlockState blockState)
+    public ComparatorNode(World world, BlockPos position, BlockState blockState)
     {
         super(world, position, blockState);
-
-        // Get the latency of this node.
-        this.latency = ((Integer) blockState.getEntries().get(Properties.DELAY)) * 2;
+        this.latency = 1;
     }
 
     // ###
@@ -40,18 +39,18 @@ public class RepeaterNode extends Node
 
     public void populateChildren()
     {
-// ## Setup
+        // ## Setup
         List<Node> receivingNodes = new ArrayList<Node>();
         // # Setting up the properties
-        // Repeater output facing and not plain facing, because the facing of a repeater is where
+        // Comparator output facing and not plain facing, because the facing of a comparator is where
         // its getting its input from which is really counter intuitive.
-        Direction repeaterOutputFacing = this.blockState.get(Properties.HORIZONTAL_FACING).getOpposite();
+        Direction comparatorOutputFacing = this.blockState.get(Properties.HORIZONTAL_FACING).getOpposite();
 
 
         // ## Checking for nodes and creating them
         // # Setup
         SFabricLib.BlockUtils.PositionedBlockState offsetEqual =
-                SFabricLib.BlockUtils.PositionedBlockState.of(world, this.position.offset(repeaterOutputFacing));
+                SFabricLib.BlockUtils.PositionedBlockState.of(world, this.position.offset(comparatorOutputFacing));
 
 
         // # REDSTONE WIRES
@@ -64,7 +63,7 @@ public class RepeaterNode extends Node
 
         // # REPEATERS
         if (isBlock(offsetEqual, Blocks.REPEATER))
-            if (getProperty(offsetEqual, Properties.HORIZONTAL_FACING) == repeaterOutputFacing.getOpposite())
+            if (getProperty(offsetEqual, Properties.HORIZONTAL_FACING) == comparatorOutputFacing.getOpposite())
                 receivingNodes.add(Node.create(world, offsetEqual.getBlockPos()));
 
         if (isSolidBlock(world, offsetEqual))
@@ -73,7 +72,9 @@ public class RepeaterNode extends Node
 
         // # COMPARATORS
         if (isBlock(offsetEqual, Blocks.COMPARATOR))
-            if (getProperty(offsetEqual, Properties.HORIZONTAL_FACING) == repeaterOutputFacing.getOpposite())
+            // Checking for comparators not facing in our repeater node, as they can take
+            // a repeater input from all 3 sides except this one.
+            if (getProperty(offsetEqual, Properties.HORIZONTAL_FACING) != comparatorOutputFacing)
                 receivingNodes.add(Node.create(world, offsetEqual.getBlockPos()));
 
         if (isSolidBlock(world, offsetEqual) && !isBlockEntity(offsetEqual))

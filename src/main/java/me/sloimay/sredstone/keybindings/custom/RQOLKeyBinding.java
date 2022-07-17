@@ -81,7 +81,7 @@ public class RQOLKeyBinding extends SKeyBinding
         if(!client.player.getAbilities().creativeMode) return;
 
         // Send a ray from the player's head, and see which block they're facing, then give it as a pick block to the player
-        SFabricLib.PlayerUtils.PositionedBlock pb =
+        SFabricLib.BlockUtils.PositionedBlock pb =
                 SFabricLib.PlayerUtils.getBlockLookingAtClient(client.player, 10, 1.0f, false);
         Block blockLookingAt = pb == null ? null : pb.getBlock();
         client.player.getInventory().updateItems();

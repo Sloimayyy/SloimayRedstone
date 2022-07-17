@@ -18,6 +18,7 @@ import net.minecraft.util.Hand;
 import net.minecraft.util.hit.BlockHitResult;
 import net.minecraft.util.hit.HitResult;
 import net.minecraft.util.math.*;
+import net.minecraft.world.World;
 
 import java.util.HashMap;
 
@@ -153,7 +154,64 @@ public class SFabricLib
                 return b1.toString().equals(b2.toString());
             }
         }
+
+
+
+        /**
+         * Stores a block and its block pos
+         */
+        public static class PositionedBlock
+        {
+            // ### Fields
+            private final Block block;
+            private final BlockPos blockPos;
+            // ###
+            // ### Init
+            public PositionedBlock(Block block, BlockPos blockPos)
+            {
+                this.block = block;
+                this.blockPos = blockPos;
+            }
+            // ###
+            // ### Getters and setters
+            public Block getBlock() {
+                return block;
+            }
+            public BlockPos getBlockPos() {
+                return blockPos;
+            }
+            // ###
+        }
+
+        /**
+         * Stores a block state and its block pos
+         */
+        public static class PositionedBlockState
+        {
+            // ### Fields
+            private final BlockState blockState;
+            private final BlockPos blockPos;
+            // ###
+            // ### Init
+            public PositionedBlockState(BlockState blockState, BlockPos blockPos)
+            {
+                this.blockState = blockState;
+                this.blockPos = blockPos;
+            }
+            // ###
+            // ### Public static methods
+            public static PositionedBlockState of(World world, BlockPos blockPos)
+            { return new PositionedBlockState(world.getBlockState(blockPos), blockPos); }
+            // ###
+            // ### Getters and setters
+            public BlockState getBlockState() { return blockState; }
+            public BlockPos getBlockPos() {
+                return blockPos;
+            }
+            // ###
+        }
     }
+
 
 
     public static class PlayerUtils
@@ -168,7 +226,7 @@ public class SFabricLib
          * @param includeFluids
          * @return
          */
-        public static PositionedBlock getBlockLookingAtClient(ClientPlayerEntity player, double maxDistance, float tickDelta, boolean includeFluids)
+        public static BlockUtils.PositionedBlock getBlockLookingAtClient(ClientPlayerEntity player, double maxDistance, float tickDelta, boolean includeFluids)
         {
             // Send a ray from the player's head, and see which block they're facing
             HitResult hitResult = player.raycast(maxDistance, tickDelta, includeFluids);
@@ -179,7 +237,7 @@ public class SFabricLib
             Vec3d blockPos = hitResult.getPos().add(player.getRotationVecClient().multiply(0.00001));
             Block hitBlock = player.world.getBlockState(new BlockPos(blockPos)).getBlock();
 
-            return new PositionedBlock(hitBlock, VectorUtils.vec3dToBlockPos(blockPos));
+            return new BlockUtils.PositionedBlock(hitBlock, VectorUtils.vec3dToBlockPos(blockPos));
         }
 
         /**
@@ -237,7 +295,7 @@ public class SFabricLib
          * Places the block the client has in hand at the inputted coordinates.
          *
          * @param client
-         * @param offset
+         * @param placePos
          * @param swingHand
          */
         public static void placeBlockInHandAbsolute(MinecraftClient client, Vec3d placePos, boolean swingHand, Direction dir)
@@ -427,63 +485,12 @@ public class SFabricLib
         {
             return player.getServer().getPlayerManager().getPlayer(player.getEntityName());
         }
-
-
-        /**
-         * Stores a block and its block pos
-         */
-        public static class PositionedBlock
-        {
-            // ### Fields
-            private final Block block;
-            private final BlockPos blockPos;
-            // ###
-            // ### Init
-            public PositionedBlock(Block block, BlockPos blockPos)
-            {
-                this.block = block;
-                this.blockPos = blockPos;
-            }
-            // ###
-            // ### Getters and setters
-            public Block getBlock() {
-                return block;
-            }
-            public BlockPos getBlockPos() {
-                return blockPos;
-            }
-            // ###
-        }
-
-        /**
-         * Stores a block state and its block pos
-         */
-        public static class PositionedBlockState
-        {
-            // ### Fields
-            private final BlockState blockState;
-            private final BlockPos blockPos;
-            // ###
-            // ### Init
-            public PositionedBlockState(BlockState blockState, BlockPos blockPos)
-            {
-                this.blockState = blockState;
-                this.blockPos = blockPos;
-            }
-            // ###
-            // ### Getters and setters
-            public BlockState getBlockState() {
-                return blockState;
-            }
-            public BlockPos getBlockPos() {
-                return blockPos;
-            }
-            // ###
-        }
     }
 
+
+
     /**
-     * Utils for commands
+     * Utils for commands (pogs in chat please)
      */
     public static class CommandUtils
     {
