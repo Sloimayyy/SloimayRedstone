@@ -37,6 +37,8 @@ public class RedstoneNetworkPoolTimingTicker extends ClientTicker
     public void run(MinecraftClient client)
     {
         // ## Setup
+        // Handles if the user is in the menu
+        if (client.player == null) return;
         if (!ClientDB.constantlyPoolRedstoneNetwork) return;
         if (ClientDB.redstoneNetwork == null) return;
 

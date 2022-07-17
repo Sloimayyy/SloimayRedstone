@@ -35,6 +35,7 @@ import static net.fabricmc.fabric.api.client.command.v1.ClientCommandManager.lit
  *      /redstonenetwork help: Gives indications on different command arguments like what is maxSpan and maxTraversalCount.
  *      Find out a way to use BlockPos arguments in client commands (BlockPosArgumentType.getBlockPos()) needs a
  *      {@code CommandContext<ServerCommandSource>} and not a {@code CommandContext<FabricClientCommandSource}
+ *      /redstonenetwork clear: Clears the redstone network currently held in memory
  *
  */
 public class RedstoneNetworkCommand extends SClientCommand
