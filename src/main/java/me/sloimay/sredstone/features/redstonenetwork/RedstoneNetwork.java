@@ -7,6 +7,8 @@ import net.minecraft.world.World;
 
 import java.util.*;
 
+import static me.sloimay.sredstone.utils.SFabricLib.BlockUtils.BlockPosUtils.asLong;
+
 /**
  * Represents a network of redstone components.
  */
@@ -28,12 +30,12 @@ public class RedstoneNetwork
      * The delays of each node from the root node.
      * Each node is characterized by its position toShortString().
      */
-    private HashMap<String, Set<Integer>> nodeTimings;
+    private HashMap<Long, Set<Integer>> nodeTimings;
 
     /**
-     * The amount of time the inputted node has been traversed.
+     * Holds some data about the node at the BlockPos long it's at.
      */
-    private HashMap<String, Integer> traversalCounts;
+    private HashMap<Long, NodeMappingData> nodeMappingData;
 
     // # Mapping
     /**
@@ -54,8 +56,7 @@ public class RedstoneNetwork
         this.world = world;
         this.startBlockPos = startBlockPos;
 
-        this.nodeTimings = new HashMap<String, Set<Integer>>();
-        this.traversalCounts = new HashMap<String, Integer>();
+        this.nodeTimings = new HashMap<Long, Set<Integer>>();
     }
 
     // ###
@@ -102,7 +103,7 @@ public class RedstoneNetwork
             - First map the entire network with just nodes
             - then calculate the delay afterwards
             - and tHEn put all of these delays in a hashmap
-            // OUTDATED
+
 
             The stack is only here for traversing the network efficiently, so that
             when we stumble upon a redstone wire, we don't go back from where we
@@ -130,8 +131,37 @@ public class RedstoneNetwork
                             map(child, maxSpan - 1, maxOverlap)
 
                 pop node out of the stack
+                // OUTDATED
+
+
+                Iterative BFS:
+
+                stepCount = 0
+                while ((queue is not empty) and stepCount < maxSpan)
+                    allNodesInQueue = new ArrayList<Node>(queue)
+                    empty the queue
+
+                    Iterate through each node in allNodesInQueue:
+                        node mapping data = get the node mapping data of this node
+
+                        find the child nodes for each node
+                        put all the child nodes in the queue
+
+
+
 
          */
+
+
+
+
+
+
+
+
+
+
+        /* OLD RECURSIVE DFS IMPLEMENTATION
 
         // ## Get how many times this node has been traversed
         String nodeCharacterizationString = startNode.getPosition().toShortString();
@@ -154,7 +184,7 @@ public class RedstoneNetwork
         // ## Get the node we're coming from
         Node nodeComingFrom = this.comingFrom.empty() ? null : this.comingFrom.peek();
         // ## Put startNode on the stack
-        this.comingFrom.add(startNode);
+        this.comingFrom.push(startNode);
 
         // ## Map the children
         if (maxSpan > 0)
@@ -176,6 +206,8 @@ public class RedstoneNetwork
 
         // ## At the end, pop the stack
         if (!this.comingFrom.empty()) comingFrom.pop();
+
+         */
     }
 
     /**
@@ -187,10 +219,8 @@ public class RedstoneNetwork
      */
     private void registerNodeTiming(Node node, int timing)
     {
-        String nodeCharacterizationString = node.getPosition().toShortString();
-
-        nodeTimings.putIfAbsent(nodeCharacterizationString, new HashSet<Integer>());
-        nodeTimings.get(nodeCharacterizationString).add(timing);
+        nodeTimings.putIfAbsent(asLong(node.getPosition()), new HashSet<Integer>());
+        nodeTimings.get(asLong(node.getPosition())).add(timing);
     }
 
     // ###
@@ -209,6 +239,32 @@ public class RedstoneNetwork
 
         // It is a registered node so we return the timings.
         return Collections.unmodifiableSet(nodeTimings.get(nodeCharacterizationString));
+    }
+
+    // ###
+
+
+
+    // ### Classes
+
+    /**
+     * Wrapper for information relating nodes during mapping.
+     */
+    private static class NodeMappingData
+    {
+        private int traversalCount;
+        private HashSet<Integer> timings;
+
+        public NodeMappingData()
+        {
+            this.timings = new HashSet<Integer>();
+        }
+
+        public void setTraversalCount(int traversalCount) { this.traversalCount = traversalCount; }
+        public int getTraversalCount() { return this.traversalCount; }
+
+        public void addTiming(int timing) { this.timings.add(timing); }
+        public Set<Integer> getTimings() { return Collections.unmodifiableSet(this.timings); }
     }
 
     // ###

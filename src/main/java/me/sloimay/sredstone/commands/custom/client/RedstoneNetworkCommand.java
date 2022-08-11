@@ -10,6 +10,7 @@ import me.sloimay.sredstone.features.redstonenetwork.nodes.Node;
 import me.sloimay.sredstone.utils.SFabricLib;
 import me.sloimay.sredstone.utils.SRedstoneHelpers;
 import net.fabricmc.fabric.api.client.command.v1.FabricClientCommandSource;
+import net.minecraft.block.Blocks;
 import net.minecraft.network.MessageType;
 import net.minecraft.text.LiteralText;
 import net.minecraft.util.math.BlockPos;

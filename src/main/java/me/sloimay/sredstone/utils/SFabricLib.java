@@ -155,6 +155,34 @@ public class SFabricLib
             }
         }
 
+        public static class BlockPosUtils
+        {
+            // ### Private fields
+
+            private static long toLongXZMask = Long.parseLong("1".repeat(26), 2);
+            private static long toLongYMask = Long.parseLong("1".repeat(12), 2);
+
+            // ###
+
+            /**
+             * X, Z € [-30,000,000 ; 30,000,000] so need
+             * 26 bits to express them each, which leaves us with 12 bits for Y
+             * which is enough for 4096 different Y values
+             *
+             * @param blockPos
+             * @return
+             */
+            public static long asLong(BlockPos blockPos)
+            {
+                long x = blockPos.getX();
+                long y = blockPos.getY();
+                long z = blockPos.getZ();
+
+                // Store x in the first 26 bits, z in the next, and y in the remaining 12.
+                return (x & toLongXZMask) | ((z & toLongXZMask) << 26) | ((y & toLongYMask) << 52);
+            }
+        }
+
 
 
         /**
@@ -205,9 +233,7 @@ public class SFabricLib
             // ###
             // ### Getters and setters
             public BlockState getBlockState() { return blockState; }
-            public BlockPos getBlockPos() {
-                return blockPos;
-            }
+            public BlockPos getBlockPos() { return blockPos; }
             // ###
         }
     }
