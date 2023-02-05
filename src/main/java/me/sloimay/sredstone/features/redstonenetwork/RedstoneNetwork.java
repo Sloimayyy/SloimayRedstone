@@ -1,7 +1,6 @@
 package me.sloimay.sredstone.features.redstonenetwork;
 
 import me.sloimay.sredstone.features.redstonenetwork.nodes.Node;
-import me.sloimay.sredstone.utils.SFabricLib;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 
@@ -28,7 +27,7 @@ public class RedstoneNetwork
 
     /**
      * The delays of each node from the root node.
-     * Each node is characterized by its position toShortString().
+     * Each node is characterized by its position to a long.
      */
     private HashMap<Long, Set<Integer>> nodeTimings;
 
@@ -38,11 +37,12 @@ public class RedstoneNetwork
     private HashMap<Long, NodeMappingData> nodeMappingData;
 
     // # Mapping
+
     /**
-     * The stack during the mapping that contains all the nodes
-     * of the path until the node we're currently iterating from.
+     * The queue used in the bfs search for mapping
      */
-    private Stack<Node> comingFrom;
+    private Queue<Node> bfsQueue;
+
     // #
 
     // ###
@@ -74,10 +74,12 @@ public class RedstoneNetwork
     public void map(int maxSpan, int maxTraversalCount)
     {
         // Setup
-        this.comingFrom = new Stack<Node>();
+        //this.comingFrom = new Stack<Node>();
+        this.bfsQueue = new ArrayDeque<Node>();
 
         // Start mapping
-        this.map(Node.create(this.world, this.startBlockPos), maxSpan, maxTraversalCount, 0);
+        //this.mapRecursiveDFS(Node.create(this.world, this.startBlockPos), maxSpan, maxTraversalCount, 0);
+        this.mapIterativeBFS(Node.create(this.world, this.startBlockPos), maxSpan, 0);
     }
 
     // ###
@@ -90,11 +92,41 @@ public class RedstoneNetwork
      * Maps the redstone network from the inputted start node.
      *
      * @param startNode
+     * @param nodeTraversalAmountMax
+     * @param timing: The amount of game ticks from the root node.
+     */
+    private void mapIterativeBFS(Node startNode, int nodeTraversalAmountMax, int timing)
+    {
+        /*
+
+
+
+         */
+
+
+
+
+        this.bfsQueue.add(startNode);
+
+
+
+
+        while (this.bfsQueue.size() != 0)
+        {
+            Node n = this.bfsQueue.poll();
+        }
+
+    }
+
+    /**
+     * Maps the redstone network from the inputted start node.
+     *
+     * @param startNode
      * @param maxSpan
      * @param maxTraversalCount
      * @param timing: The amount of game ticks from the root node.
      */
-    private void map(Node startNode, int maxSpan, int maxTraversalCount, int timing)
+    private void mapRecursiveDFS(Node startNode, int maxSpan, int maxTraversalCount, int timing)
     {
         /*
 

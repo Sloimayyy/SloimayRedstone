@@ -1,5 +1,8 @@
 package me.sloimay.sredstone.commands;
 
+import com.sk89q.minecraft.util.commands.Command;
+import com.sk89q.worldedit.WorldEdit;
+import com.sk89q.worldedit.session.SessionOwner;
 import me.sloimay.sredstone.commands.custom.client.*;
 import net.fabricmc.fabric.api.client.command.v1.ClientCommandManager;
 
@@ -43,6 +46,8 @@ public class ClientCommandsInit
         clientCommands.add(new CopyFlipPasteCommand());
         clientCommands.add(new RedstoneNetworkCommand());
         clientCommands.add(new AutoDustPlacingCommand());
+        clientCommands.add(new MinimizeWESelectionCommand());
+        clientCommands.add(new AvailableColorsCommand());
 
         clientCommands.add(new DevTestCommand());
 

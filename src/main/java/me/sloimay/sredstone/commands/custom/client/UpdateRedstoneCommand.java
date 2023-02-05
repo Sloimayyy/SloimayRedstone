@@ -44,8 +44,9 @@ public class UpdateRedstoneCommand extends SClientCommand
                             // dispatch 2 commands to update redstone
                             // And then do the undoing yourself, because the mod can't currently know how many
                             // of the 2 commands have been successful, this can't know how many times to undo
-                            ClientDB.mcClient.player.sendChatMessage("//replace <comparator,repeater,redstone_wire stone");
-                            ClientDB.mcClient.player.sendChatMessage("//replace barrel stone");
+                            ClientDB.mcClient.player.sendChatMessage("//replace <comparator,repeater stone");
+                            ClientDB.mcClient.player.sendChatMessage("//replace barrel,hopper stone");
+                            ClientDB.mcClient.player.sendChatMessage("//replace redstone_wire,redstone_wall_torch air");
 
                             return 0;
                         })

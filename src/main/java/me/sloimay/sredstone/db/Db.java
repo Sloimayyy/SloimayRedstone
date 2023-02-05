@@ -1,5 +1,8 @@
 package me.sloimay.sredstone.db;
 
+import com.sk89q.worldedit.history.changeset.ArrayListHistory;
+import com.sk89q.worldedit.world.block.BlockType;
+import com.sk89q.worldedit.world.block.BlockTypes;
 import net.fabricmc.fabric.api.client.command.v1.ClientCommandManager;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -19,6 +22,32 @@ public class Db
 
     public static boolean test = false;
 
+    // The minecraft colors
+    public static List<String> minecraftColors = List.of(
+            "white",
+            "orange",
+            "magenta",
+            "light_blue",
+            "yellow",
+            "lime",
+            "pink",
+            "gray",
+            "light_gray",
+            "cyan",
+            "purple",
+            "blue",
+            "brown",
+            "green",
+            "red",
+            "black"
+    );
+
+    // The hashmaps linking a block type to a certain minecraft color
+    public static HashMap<BlockType, String> woolBlockTypeToColor;
+    public static HashMap<BlockType, String> concreteBlockTypeToColor;
+    public static HashMap<BlockType, String> stainedGlassBlockTypeToColor;
+
+
 
     static {
         // Init the common color coding block ids
@@ -27,6 +56,15 @@ public class Db
 
         initCommonSolidColorCodingBlockIds();
         initCommonTransparentColorCodingBlockIds();
+
+        // Init the world edit block types to their color hashmap
+        woolBlockTypeToColor = new HashMap<BlockType, String>();
+        concreteBlockTypeToColor = new HashMap<BlockType, String>();
+        stainedGlassBlockTypeToColor = new HashMap<BlockType, String>();
+
+        initColoredBlockTypesToColor(woolBlockTypeToColor, "wool");
+        initColoredBlockTypesToColor(concreteBlockTypeToColor, "concrete");
+        initColoredBlockTypesToColor(stainedGlassBlockTypeToColor, "stained_glass");
     }
 
 
@@ -89,5 +127,13 @@ public class Db
         commonTransparentColorCodingBlockIds.add("smooth_stone_slab");
         commonTransparentColorCodingBlockIds.add("glass");
         commonTransparentColorCodingBlockIds.add("glowstone");
+    }
+
+    private static void initColoredBlockTypesToColor(HashMap<BlockType, String> blockTypeToColor, String blockIdSuffix)
+    {
+        for (String col : minecraftColors)
+        {
+            blockTypeToColor.put(BlockTypes.get("minecraft:" + col + "_" + blockIdSuffix), col);
+        }
     }
 }

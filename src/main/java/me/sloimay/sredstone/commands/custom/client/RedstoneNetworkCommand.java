@@ -10,7 +10,6 @@ import me.sloimay.sredstone.features.redstonenetwork.nodes.Node;
 import me.sloimay.sredstone.utils.SFabricLib;
 import me.sloimay.sredstone.utils.SRedstoneHelpers;
 import net.fabricmc.fabric.api.client.command.v1.FabricClientCommandSource;
-import net.minecraft.block.Blocks;
 import net.minecraft.network.MessageType;
 import net.minecraft.text.LiteralText;
 import net.minecraft.util.math.BlockPos;
@@ -133,7 +132,7 @@ public class RedstoneNetworkCommand extends SClientCommand
     private void createClientRedstoneNetwork(BlockPos rootNodeBlockPos, int maxSpan, int maxTraversalCount)
     {
         ClientDB.redstoneNetwork = new RedstoneNetwork(ClientDB.mcClient.player.world, rootNodeBlockPos);
-        ClientDB.redstoneNetwork.map(maxSpan, maxTraversalCount);
+        //ClientDB.redstoneNetwork.mapRecursiveDFS(maxSpan, maxTraversalCount);
 
         // Message in chat
         ClientDB.mcClient.inGameHud.addChatMessage(

@@ -99,7 +99,7 @@ public class TPForwardKeyBinding extends SKeyBinding
         {
             // # On a server
             // Gen the tp command
-            String tpCommand = "/tp " + client.player.getEntityName() + " " + SFabricLib.VectorUtils.vec3dToMinecraftVectorString(tpPos);
+            String tpCommand = "/tp " + SFabricLib.VectorUtils.vec3dToMinecraftVectorString(tpPos);
             // Dispatch the command
             client.player.sendChatMessage(tpCommand);
         }

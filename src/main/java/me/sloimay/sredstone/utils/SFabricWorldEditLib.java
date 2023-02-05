@@ -9,6 +9,11 @@ import com.sk89q.worldedit.regions.RegionSelector;
 import com.sk89q.worldedit.session.SessionManager;
  */
 
+import com.sk89q.worldedit.WorldEdit;
+import com.sk89q.worldedit.extension.platform.Actor;
+import com.sk89q.worldedit.regions.CuboidRegion;
+import com.sk89q.worldedit.regions.RegionSelector;
+import com.sk89q.worldedit.regions.selector.CuboidRegionSelector;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.util.math.BlockPos;
 
@@ -42,5 +47,18 @@ public class SFabricWorldEditLib
             // We returnin bois
             return (CuboidRegion) regionSelector.getIncompleteRegion();
         }*/
+
+        /**
+         * Sets the inputted actor's region selector to the inputted region selector.
+         *
+         * @param actor
+         * @param regionSelector
+         */
+        public static void setActorCuboidRegion(Actor actor, RegionSelector regionSelector)
+        {
+            WorldEdit.getInstance().getSessionManager().get(actor).setRegionSelector(
+                    regionSelector.getWorld(),
+                    regionSelector);
+        }
     }
 }

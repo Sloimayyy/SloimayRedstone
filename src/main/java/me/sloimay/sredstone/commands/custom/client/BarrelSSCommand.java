@@ -125,7 +125,6 @@ public class BarrelSSCommand extends SClientCommand
         }
         catch (Exception e) {}
 
-
         // Add the barrels to the database
         this.ssBarrels.add(barrel0);
         this.ssBarrels.add(barrel1);
